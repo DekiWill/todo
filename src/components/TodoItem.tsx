@@ -14,7 +14,7 @@ export default function TodoItem({
   data,
   removeTask,
   updateTask,
-  isChecked = false,
+  isChecked,
 }: TodoItemProps) {
   function handleRemoveTask() {
     removeTask(data.id);

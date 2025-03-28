@@ -2,7 +2,7 @@ import { ClipboardText, PlusCircle } from "@phosphor-icons/react";
 
 import styles from "./TodoList.module.css";
 import TodoItem from "./TodoItem";
-import { ChangeEvent, useState, FormEvent } from "react";
+import { ChangeEvent, useState, FormEvent, useEffect } from "react";
 
 export interface TaskProps {
   id: number;
@@ -11,27 +11,23 @@ export interface TaskProps {
 }
 
 export default function TodoList() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      task: "Estudar React",
-      completed: true,
-    },
-    {
-      id: 2,
-      task: "Estudar TypeScript",
-      completed: false,
-    },
-    {
-      id: 3,
-      task: "Estudar Node.js",
-      completed: false,
-    },
-  ]);
+  const [tasks, setTasks] = useState<TaskProps[]>([]);
 
   const [newTask, setNewTask] = useState("");
 
-  function updateTask() {}
+  const [completedTasks, setCompletedTasks] = useState<TaskProps[]>([]);
+
+  function updateTask(id: number, value: boolean) {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === id) {
+        return { ...task, completed: value };
+      }
+
+      return { ...task };
+    });
+
+    setTasks(updatedTasks);
+  }
 
   function removeTask(id: number) {
     const newTaskList = tasks.filter((task) => {
@@ -53,7 +49,13 @@ export default function TodoList() {
       completed: false,
     };
     setTasks([...tasks, newTaskItem]);
+    setNewTask("");
   }
+
+  useEffect(() => {
+    const completedTasks = tasks.filter((task) => task.completed);
+    setCompletedTasks(completedTasks);
+  }, [tasks]);
   return (
     <main className={styles.todoList}>
       <form onSubmit={handleSubmitTask} className={styles.form}>
@@ -74,7 +76,8 @@ export default function TodoList() {
         </h2>
 
         <h2 className={styles.done}>
-          Concluídas <span>2 de 5</span>
+          Concluídas{" "}
+          <span>{`${completedTasks.length} de ${tasks.length}`}</span>
         </h2>
       </header>
 
