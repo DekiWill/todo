@@ -2,9 +2,43 @@ import { ClipboardText, PlusCircle } from "@phosphor-icons/react";
 
 import styles from "./TodoList.module.css";
 import TodoItem from "./TodoItem";
-export default function TodoList() {
-  const tasks = ["teste"];
+import { useState } from "react";
 
+export interface TaskProps {
+  id: number;
+  task: string;
+  completed: boolean;
+}
+
+export default function TodoList() {
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      task: "Estudar React",
+      completed: true,
+    },
+    {
+      id: 2,
+      task: "Estudar TypeScript",
+      completed: false,
+    },
+    {
+      id: 3,
+      task: "Estudar Node.js",
+      completed: false,
+    },
+  ]);
+
+  // const [completedTask, setCompletedTasks] = useState([]);
+
+  function updateTask() {}
+  function removeTask(id: number) {
+    const newTaskList = tasks.filter((task) => {
+      return task.id !== id;
+    });
+
+    setTasks(newTaskList);
+  }
   return (
     <main className={styles.todoList}>
       <form className={styles.form}>
@@ -16,7 +50,7 @@ export default function TodoList() {
 
       <header className={styles.header}>
         <h2 className={styles.created}>
-          Tarefas criadas <span>5</span>
+          Tarefas criadas <span>{tasks.length}</span>
         </h2>
 
         <h2 className={styles.done}>
@@ -26,9 +60,17 @@ export default function TodoList() {
 
       {tasks.length > 0 ? (
         <ul>
-          <TodoItem />
-          <TodoItem />
-          <TodoItem />
+          {tasks.map((task) => {
+            return (
+              <TodoItem
+                isChecked={task.completed}
+                updateTask={updateTask}
+                removeTask={removeTask}
+                key={task.id}
+                data={task}
+              />
+            );
+          })}
         </ul>
       ) : (
         <div className={styles.empty}>
