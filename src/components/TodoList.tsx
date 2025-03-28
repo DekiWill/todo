@@ -2,7 +2,7 @@ import { ClipboardText, PlusCircle } from "@phosphor-icons/react";
 
 import styles from "./TodoList.module.css";
 import TodoItem from "./TodoItem";
-import { useState } from "react";
+import { ChangeEvent, useState, FormEvent } from "react";
 
 export interface TaskProps {
   id: number;
@@ -29,9 +29,10 @@ export default function TodoList() {
     },
   ]);
 
-  // const [completedTask, setCompletedTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
 
   function updateTask() {}
+
   function removeTask(id: number) {
     const newTaskList = tasks.filter((task) => {
       return task.id !== id;
@@ -39,10 +40,29 @@ export default function TodoList() {
 
     setTasks(newTaskList);
   }
+
+  function handleCreateTask(event: ChangeEvent<HTMLInputElement>) {
+    setNewTask(event.target.value);
+  }
+
+  function handleSubmitTask(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const newTaskItem = {
+      id: Math.random(),
+      task: newTask,
+      completed: false,
+    };
+    setTasks([...tasks, newTaskItem]);
+  }
   return (
     <main className={styles.todoList}>
-      <form className={styles.form}>
-        <input placeholder="Adicione uma nova tarefa" type="text" />
+      <form onSubmit={handleSubmitTask} className={styles.form}>
+        <input
+          value={newTask}
+          onChange={handleCreateTask}
+          placeholder="Adicione uma nova tarefa"
+          type="text"
+        />
         <button type="submit">
           Criar <PlusCircle size={20} weight="bold" />
         </button>
