@@ -17,10 +17,10 @@ export default function TodoList() {
 
   const [completedTasks, setCompletedTasks] = useState<TaskProps[]>([]);
 
-  function updateTask(id: number, value: boolean) {
+  function updateTask(id: number, isChecked: boolean) {
     const updatedTasks = tasks.map((task) => {
       if (task.id === id) {
-        return { ...task, completed: value };
+        return { ...task, completed: isChecked };
       }
 
       return { ...task };
@@ -56,6 +56,7 @@ export default function TodoList() {
     const completedTasks = tasks.filter((task) => task.completed);
     setCompletedTasks(completedTasks);
   }, [tasks]);
+
   return (
     <main className={styles.todoList}>
       <form onSubmit={handleSubmitTask} className={styles.form}>
